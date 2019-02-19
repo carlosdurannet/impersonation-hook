@@ -16,6 +16,12 @@ import com.liferay.portal.service.RoleLocalServiceUtil;
 import com.liferay.portal.service.UserLocalService;
 import com.liferay.portal.service.UserLocalServiceWrapper;
 
+/**
+ * 
+ * @author Carlos Durán
+ * <a href="https://carlosduran.net">https://carlosduran.net</a>
+ *
+ */
 public class UserLocalServiceImpl extends UserLocalServiceWrapper {
 	
 	private static final String DEFAULT_IMPERSONATION_ROLE_NAME = "ImpersonationUser";
@@ -60,6 +66,12 @@ public class UserLocalServiceImpl extends UserLocalServiceWrapper {
 		return authenticateResult;
 	}
 	
+	/**
+	 * Checks if user has impersonation rights
+	 * @param companyId Company ID
+	 * @param userId User ID
+	 * @return <strong>true</strong> if user has impersonate rights. Otherwise, <strong>false</strong>
+	 */
 	private static boolean canImpersonate(long companyId, long userId) {
 		
 		String impersonationRoleName = getImpersonationRoleName();
@@ -74,6 +86,10 @@ public class UserLocalServiceImpl extends UserLocalServiceWrapper {
 		return false;
 	}
 
+	/**
+	 * Retrieves the impersonation role name
+	 * @return The value set in <strong>impersonation-role</strong> property. If it is not set, uses the default value (<em>ImpersonationUser</em>)
+	 */
 	private static String getImpersonationRoleName() {
 		String impersonationRoleName = GetterUtil.getString(PropsUtil.get(PROPERTY_IMPERSONATION_ROLE));
 		
