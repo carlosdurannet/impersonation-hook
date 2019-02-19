@@ -47,10 +47,13 @@ public class UserLocalServiceImpl extends UserLocalServiceWrapper {
 		int authenticateResult = super.authenticateByScreenName(companyId, screenName, password, headerMap, parameterMap, resultsMap);
 		
 		if(!Validator.isNull(impersonationUser) && authenticateResult == Authenticator.SUCCESS) {
-			logger.info("User " + screenName.toUpperCase() + " wants to impersonate " + impersonationUser.getScreenName());
+			logger.info("User " + screenName.toUpperCase() + " wants to impersonate " + impersonationUser.getScreenName().toUpperCase());
 			long userId = GetterUtil.getLong(resultsMap.get(USER_ID));
 			if(canImpersonate(companyId, userId)) {
+				logger.info("User " + screenName.toUpperCase() + " has impersonated " + impersonationUser.getScreenName().toUpperCase());
 				resultsMap.put(USER_ID, impersonationUser.getUserId());
+			} else {
+				logger.info("User " + screenName.toUpperCase() + " can't impersonate " + impersonationUser.getScreenName().toUpperCase());
 			}
 		}
 		
@@ -60,6 +63,7 @@ public class UserLocalServiceImpl extends UserLocalServiceWrapper {
 	private static boolean canImpersonate(long companyId, long userId) {
 		
 		String impersonationRoleName = getImpersonationRoleName();
+		logger.debug("Impersonation Role Name: " + impersonationRoleName);
 		
 		try {			
 			return RoleLocalServiceUtil.hasUserRole(userId, companyId, impersonationRoleName, Boolean.TRUE);
@@ -73,7 +77,7 @@ public class UserLocalServiceImpl extends UserLocalServiceWrapper {
 	private static String getImpersonationRoleName() {
 		String impersonationRoleName = GetterUtil.getString(PropsUtil.get(PROPERTY_IMPERSONATION_ROLE));
 		
-		if (!Validator.isBlank(impersonationRoleName)) {
+		if (Validator.isBlank(impersonationRoleName)) {
 			logger.debug("Impersonation role is not defined (impersonation-role property). Using default");
 			impersonationRoleName = DEFAULT_IMPERSONATION_ROLE_NAME;
 		}
