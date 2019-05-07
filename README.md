@@ -1,4 +1,4 @@
-# Impersonations Portlet
+# Impersonations Hook
 
 This is a hook for Liferay (version 6.2 GA6) that implements a more effective impersonation function without using an url parameter
 
